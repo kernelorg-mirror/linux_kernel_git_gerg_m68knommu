@@ -66,6 +66,8 @@ EXPORT_SYMBOL(m68k_mmutype);
 unsigned long vme_brdtype;
 EXPORT_SYMBOL(vme_brdtype);
 #endif
+char *m68k_cpumodel;
+unsigned long m68k_cpurevision;
 
 int m68k_is040or060;
 EXPORT_SYMBOL(m68k_is040or060);
@@ -377,6 +379,8 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 {
 	const char *cpu, *mmu, *fpu;
 	unsigned long clockfreq, clockfactor;
+	char revstr[32];
+	char modelstr[32];
 
 #define LOOP_CYCLES_68020	(8)
 #define LOOP_CYCLES_68030	(8)
@@ -442,13 +446,20 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 
 	clockfreq = loops_per_jiffy * HZ * clockfactor;
 
+	if (m68k_cpumodel)
+		sprintf(modelstr, "Model:\t\t%s\n", m68k_cpumodel);
+	if (m68k_cpurevision)
+		sprintf(revstr, "Revision=\t%ld\n", m68k_cpurevision);
+
 	seq_printf(m, "CPU:\t\t%s\n"
+		   "%s"
+		   "%s"
 		   "MMU:\t\t%s\n"
 		   "FPU:\t\t%s\n"
 		   "Clocking:\t%lu.%1luMHz\n"
 		   "BogoMips:\t%lu.%02lu\n"
 		   "Calibration:\t%lu loops\n",
-		   cpu, mmu, fpu,
+		   cpu, modelstr, revstr, mmu, fpu,
 		   clockfreq/1000000,(clockfreq/100000)%10,
 		   loops_per_jiffy/(500000/HZ),(loops_per_jiffy/(5000/HZ))%100,
 		   loops_per_jiffy);
