@@ -206,6 +206,8 @@ extern unsigned long m68k_mmutype;
 #ifdef CONFIG_VME
 extern unsigned long vme_brdtype;
 #endif
+extern char *m68k_cpumodel;
+extern unsigned long m68k_cpurevision;
 
     /*
      *  m68k_is040or060 is != 0 for a '040 or higher;
