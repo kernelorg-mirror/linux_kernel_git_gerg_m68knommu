@@ -65,9 +65,17 @@ void (*mach_halt)(void);
 #define CPU_NAME	"MC68000"
 #endif
 #endif /* CONFIG_M68000 */
+#ifdef CONFIG_COLDFIRE
+#define CPU_FAMILY	"ColdFire"
+#else
+#define CPU_FAMILY	"classic"
+#endif
 #ifndef CPU_NAME
 #define	CPU_NAME	"UNKNOWN"
 #endif
+
+char *m68k_cpumodel = CPU_NAME;
+unsigned long m68k_cpurevision;
 
 /*
  * Different cores have different instruction execution timings.
@@ -81,6 +89,8 @@ void (*mach_halt)(void);
 
 void __init setup_arch(char **cmdline_p)
 {
+	char revstr[32];
+
 	memory_start = PAGE_ALIGN(_ramstart);
 	memory_end = _ramend;
 
@@ -94,7 +104,11 @@ void __init setup_arch(char **cmdline_p)
 
 	process_uboot_commandline(&command_line[0], sizeof(command_line));
 
-	pr_info("uClinux with CPU " CPU_NAME "\n");
+	if (m68k_cpumodel == NULL)
+		m68k_cpumodel = CPU_NAME;
+	if (m68k_cpurevision)
+		sprintf(revstr, "revision=%ld", m68k_cpurevision);
+	pr_info("CPU: %s (%s,noMMU) %s\n", m68k_cpumodel, CPU_FAMILY, revstr);
 
 #ifdef CONFIG_UCDIMM
 	pr_info("uCdimm by Lineo, Inc. <www.lineo.com>\n");
@@ -173,19 +187,29 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 {
 	char *cpu, *mmu, *fpu;
 	u_long clockfreq;
+	char modelstr[32] = "";
+	char revstr[32] = "";
 
 	cpu = CPU_NAME;
 	mmu = "none";
 	fpu = "none";
 	clockfreq = (loops_per_jiffy * HZ) * CPU_INSTR_PER_JIFFY;
+	if (m68k_cpumodel)
+		sprintf(modelstr, "Model:\t\t%s\n", m68k_cpumodel);
+	if (m68k_cpurevision)
+		sprintf(revstr, "Revision=\t%ld\n", m68k_cpurevision);
 
 	seq_printf(m, "CPU:\t\t%s\n"
+		      "Family:\t\t%s\n"
+		      "%s"
 		      "MMU:\t\t%s\n"
 		      "FPU:\t\t%s\n"
+		      "%s"
 		      "Clocking:\t%lu.%1luMHz\n"
 		      "BogoMips:\t%lu.%02lu\n"
 		      "Calibration:\t%lu loops\n",
-		      cpu, mmu, fpu,
+		      cpu, CPU_FAMILY, modelstr,
+		      mmu, fpu, revstr,
 		      clockfreq / 1000000,
 		      (clockfreq / 100000) % 10,
 		      (loops_per_jiffy * HZ) / 500000,
