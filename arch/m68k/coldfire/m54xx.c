@@ -25,6 +25,7 @@
 #include <asm/mcfuart.h>
 #include <asm/mcfclk.h>
 #include <asm/m54xxgpt.h>
+#include <asm/setup.h>
 #ifdef CONFIG_MMU
 #include <asm/mmu_context.h>
 #endif
@@ -87,10 +88,39 @@ static void mcf54xx_reset(void)
 
 /***************************************************************************/
 
+static void __init m54xx_probe_cpu(void)
+{
+	switch (mcf_read32(MCF_JTAG_ID)) {
+	case MCFJTAGID_5470:
+		m68k_cpumodel = "5470";
+		break;
+	case MCFJTAGID_5471:
+		m68k_cpumodel = "5471";
+		break;
+	case MCFJTAGID_5472:
+		m68k_cpumodel = "5472";
+		break;
+	case MCFJTAGID_5473:
+		m68k_cpumodel = "5473";
+		break;
+	case MCFJTAGID_5474:
+		m68k_cpumodel = "5474";
+		break;
+	case MCFJTAGID_5475:
+		m68k_cpumodel = "5475";
+		break;
+	default:
+		m68k_cpumodel = "547x";
+		break;
+	}
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 	mach_reset = mcf54xx_reset;
 	mach_sched_init = hw_timer_init;
+
+	m54xx_probe_cpu();
 	m54xx_uarts_init();
 	m54xx_i2c_init();
 
