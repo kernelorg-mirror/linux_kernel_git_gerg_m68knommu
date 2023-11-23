@@ -21,6 +21,7 @@
 #include <asm/mcfsim.h>
 #include <asm/mcfuart.h>
 #include <asm/mcfclk.h>
+#include <asm/setup.h>
 
 /***************************************************************************/
 
@@ -79,6 +80,14 @@ static void m5272_cpu_reset(void)
 
 /***************************************************************************/
 
+static void __init m5272_probe_cpu(void)
+{
+	u32 v;
+
+	v = mcf_read32(MCFSIM_DIR);
+	m68k_cpurevision = v >> 28;
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 #if defined (CONFIG_MOD5272)
@@ -98,6 +107,8 @@ void __init config_BSP(char *commandp, int size)
 
 	mach_reset = m5272_cpu_reset;
 	mach_sched_init = hw_timer_init;
+
+	m5272_probe_cpu();
 }
 
 /***************************************************************************/
