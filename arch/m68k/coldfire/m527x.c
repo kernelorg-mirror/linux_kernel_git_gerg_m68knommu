@@ -23,6 +23,7 @@
 #include <asm/mcfsim.h>
 #include <asm/mcfuart.h>
 #include <asm/mcfclk.h>
+#include <asm/setup.h>
 
 /***************************************************************************/
 
@@ -133,13 +134,37 @@ static void __init m527x_fec_init(void)
 
 /***************************************************************************/
 
+static void __init m527x_probe_cpu(void)
+{
+	u16 v;
+
+	v = mcf_read16(MCF_CIR);
+
+	switch (MCFCIR_PIN(v)) {
+	case MCFCIR_5275:
+		m68k_cpumodel = "5275";
+		break;
+	case MCFCIR_5271:
+		m68k_cpumodel = "5271";
+		break;
+	default:
+		m68k_cpumodel = "527x";
+		break;
+	}
+
+	m68k_cpurevision = MCFCIR_PRN(v);
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 	mach_sched_init = hw_timer_init;
+
+	m527x_probe_cpu();
 	m527x_uarts_init();
 	m527x_fec_init();
 	m527x_qspi_init();
 	m527x_i2c_init();
+
 	clkdev_add_table(m527x_clk_lookup, ARRAY_SIZE(m527x_clk_lookup));
 }
 
