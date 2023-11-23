@@ -19,6 +19,7 @@
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
 #include <asm/mcfclk.h>
+#include <asm/setup.h>
 
 /***************************************************************************/
 
@@ -75,10 +76,23 @@ static void __init m525x_i2c_init(void)
 
 /***************************************************************************/
 
+static void __init m525x_probe_cpu(void)
+{
+	u32 v;
+
+	v = mcf_read32(MCF_DEVICEID);
+	if (MCFID(v) == MCFID_5251)
+		m68k_cpumodel = "5251";
+	else
+		m68k_cpumodel = "525x";
+	m68k_cpurevision = MCFREV(v);
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 	mach_sched_init = hw_timer_init;
 
+	m525x_probe_cpu();
 	m525x_qspi_init();
 	m525x_i2c_init();
 
