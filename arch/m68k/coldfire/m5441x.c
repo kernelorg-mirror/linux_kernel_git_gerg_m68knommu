@@ -267,8 +267,39 @@ static int __init m5441x_rcm_init(void)
 }
 arch_initcall(m5441x_rcm_init);
 
+static void __init m5441x_probe_cpu(void)
+{
+	u16 v;
+
+	v = mcf_read16(MCF_CIR);
+
+	switch (MCFCIR_PIN(v)) {
+	case MCFCIR_54410:
+		m68k_cpumodel = "54410";
+		break;
+	case MCFCIR_54415:
+		m68k_cpumodel = "54415";
+		break;
+	case MCFCIR_54416:
+		m68k_cpumodel = "54416";
+		break;
+	case MCFCIR_54417:
+		m68k_cpumodel = "54417";
+		break;
+	case MCFCIR_54418:
+		m68k_cpumodel = "54418";
+		break;
+	default:
+		m68k_cpumodel = "5441x";
+		break;
+	}
+
+	m68k_cpurevision = MCFCIR_PRN(v);
+}
+
 void __init config_BSP(char *commandp, int size)
 {
+	m5441x_probe_cpu();
 	m5441x_clk_init();
 	mach_sched_init = hw_timer_init;
 	m5441x_uarts_init();
