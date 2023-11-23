@@ -25,6 +25,7 @@
 #include <asm/mcfdma.h>
 #include <asm/mcfwdebug.h>
 #include <asm/mcfclk.h>
+#include <asm/setup.h>
 
 /***************************************************************************/
 
@@ -210,6 +211,45 @@ static void __init m53xx_fec_init(void)
 
 /***************************************************************************/
 
+static void __init m53xx_probe_cpu(void)
+{
+	u16 v;
+
+	v = mcf_read16(MCF_CIR);
+
+	switch (MCFCIR_PIN(v)) {
+	case MCFCIR_5327:
+		m68k_cpumodel = "5327";
+		break;
+	case MCFCIR_5328:
+		m68k_cpumodel = "5328";
+		break;
+	case MCFCIR_5329:
+		m68k_cpumodel = "5329";
+		break;
+	case MCFCIR_5373L:
+		m68k_cpumodel = "5373L";
+		break;
+	case MCFCIR_53721:
+		m68k_cpumodel = "53721";
+		break;
+	case MCFCIR_5372:
+		m68k_cpumodel = "5372";
+		break;
+	case MCFCIR_5372L:
+		m68k_cpumodel = "5372L";
+		break;
+	case MCFCIR_5373:
+		m68k_cpumodel = "5373";
+		break;
+	default:
+		m68k_cpumodel = "537x";
+		break;
+	}
+
+	m68k_cpurevision = MCFCIR_PRN(v);
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 #if !defined(CONFIG_BOOTPARAM)
@@ -222,7 +262,10 @@ void __init config_BSP(char *commandp, int size)
 		memset(commandp, 0, size);
 	}
 #endif
+
 	mach_sched_init = hw_timer_init;
+
+	m53xx_probe_cpu();
 	m53xx_clk_init();
 	m53xx_uarts_init();
 	m53xx_fec_init();
