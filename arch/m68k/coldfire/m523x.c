@@ -22,6 +22,7 @@
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
 #include <asm/mcfclk.h>
+#include <asm/setup.h>
 
 /***************************************************************************/
 
@@ -84,9 +85,23 @@ static void __init m523x_fec_init(void)
 
 /***************************************************************************/
 
+static void __init m523x_probe_cpu(void)
+{
+	u16 v;
+
+	v = mcf_read16(MCF_CIR);
+	if (MCFCIR(v) == MCFCIR_5235)
+		m68k_cpumodel = "5235";
+	else
+		m68k_cpumodel = "523x";
+	m68k_cpurevision = MCFCIR_PRN(v);
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 	mach_sched_init = hw_timer_init;
+
+	m523x_probe_cpu();
 	m523x_fec_init();
 	m523x_qspi_init();
 	m523x_i2c_init();
