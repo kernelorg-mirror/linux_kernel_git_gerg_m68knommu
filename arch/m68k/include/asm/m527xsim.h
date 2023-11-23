@@ -362,5 +362,15 @@
 #define	MCFI2C_BASE0		(MCF_IPSBAR + 0x300)
 #define	MCFI2C_SIZE0		0x40
 
+/*
+ * Chip Identification.
+ */
+#define MCF_CIR			(MCF_IPSBAR + 0x11000A)
+#define MCFCIR_PRN(x)		((x) & 0x3f)	/* Chip revision */
+#define MCFCIR_PIN(x)		((x) >> 6)	/* Chip ID */
+
+#define MCFCIR_5271		0x32
+#define MCFCIR_5275		0x3b
+
 /****************************************************************************/
 #endif	/* m527xsim_h */
