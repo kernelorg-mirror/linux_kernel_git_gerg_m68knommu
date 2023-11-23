@@ -24,6 +24,7 @@
 #include <asm/mcfsim.h>
 #include <asm/mcfuart.h>
 #include <asm/mcfclk.h>
+#include <asm/setup.h>
 
 /***************************************************************************/
 
@@ -123,6 +124,18 @@ void wildfiremod_halt(void)
 }
 #endif
 
+static void __init m528x_probe_cpu(void)
+{
+	u16 v;
+
+	v = mcf_read16(MCF_CIR);
+	if (MCFCIR_PIN(v) == MCFCIR_5282)
+		m68k_cpumodel = "5282";
+	else
+		m68k_cpumodel = "528x";
+	m68k_cpurevision = MCFCIR_PRN(v);
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 #ifdef CONFIG_WILDFIRE
@@ -132,6 +145,8 @@ void __init config_BSP(char *commandp, int size)
 	mach_halt = wildfiremod_halt;
 #endif
 	mach_sched_init = hw_timer_init;
+
+	m528x_probe_cpu();
 	m528x_uarts_init();
 	m528x_fec_init();
 	m528x_qspi_init();
