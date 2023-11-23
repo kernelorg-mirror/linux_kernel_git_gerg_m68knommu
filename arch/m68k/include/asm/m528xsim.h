@@ -252,5 +252,14 @@
 #define	MCFI2C_BASE0		(MCF_IPSBAR + 0x300)
 #define	MCFI2C_SIZE0		0x40
 
+/*
+ * Chip Indentification
+ */
+#define MCF_CIR			(MCF_IPSBAR + 0x11000A)
+#define MCFCIR_PRN(x)		((x) & 0xff)		/* Chip revision */
+#define MCFCIR_PIN(x)		((x) >> 8)		/* Chip ID */
+
+#define MCFCIR_5282		0x20
+
 /****************************************************************************/
 #endif	/* m528xsim_h */
