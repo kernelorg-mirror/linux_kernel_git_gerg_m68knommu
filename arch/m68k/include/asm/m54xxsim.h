@@ -119,4 +119,16 @@
 #define MCFI2C_BASE0		(MCF_MBAR + 0x8f00)
 #define MCFI2C_SIZE0		0x40
 
+/*
+ * JTAG Identification.
+ */
+#define MCF_JTAG_ID		(MCF_MBAR + 0x50)
+
+#define MCFJTAGID_5470		0x1801701d
+#define MCFJTAGID_5471		0x1801601d
+#define MCFJTAGID_5472		0x1801501d
+#define MCFJTAGID_5473		0x1801401d
+#define MCFJTAGID_5474		0x1801301d
+#define MCFJTAGID_5475		0x1801201d
+
 #endif	/* m54xxsim_h */
