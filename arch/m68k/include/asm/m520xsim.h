@@ -209,5 +209,15 @@
 #define MCFI2C_BASE0		0xFC058000
 #define MCFI2C_SIZE0		0x40
 
+/*
+ * Chip Identification.
+ */
+#define MCF_CIR			0xFC0A000A
+#define MCFCIR_PRN(x)		((x) & 0x3f)		/* Chip revision */
+#define MCFCIR_PIN(x)		(((x) >> 6) & 0x3ff)	/* Chip ID */
+
+#define MCFCIR_5207		0x45
+#define MCFCIR_5208		0x44
+
 /****************************************************************************/
 #endif  /* m520xsim_h */

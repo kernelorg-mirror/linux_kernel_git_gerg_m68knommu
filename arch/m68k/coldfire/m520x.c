@@ -22,6 +22,7 @@
 #include <asm/mcfsim.h>
 #include <asm/mcfuart.h>
 #include <asm/mcfclk.h>
+#include <asm/setup.h>
 
 /***************************************************************************/
 
@@ -185,9 +186,32 @@ static void __init m520x_fec_init(void)
 
 /***************************************************************************/
 
+static void __init m520x_probe_cpu(void)
+{
+	u16 v;
+
+	v = mcf_read16(MCF_CIR);
+
+	switch (MCFCIR_PIN(v)) {
+	case MCFCIR_5208:
+		m68k_cpumodel = "5208";
+		break;
+	case MCFCIR_5207:
+		m68k_cpumodel = "5207";
+		break;
+	default:
+		m68k_cpumodel = "520x";
+		break;
+	}
+
+	m68k_cpurevision = MCFCIR_PRN(v);
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 	mach_sched_init = hw_timer_init;
+
+	m520x_probe_cpu();
 	m520x_clk_init();
 	m520x_uarts_init();
 	m520x_fec_init();
