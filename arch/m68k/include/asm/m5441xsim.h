@@ -375,4 +375,17 @@
 #define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
 #define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
 
+/*
+ * Chip Identification.
+ */
+#define MCF_CIR			0xec09000a
+#define MCFCIR_PRN(x)		((x) & 0x3f)    /* Chip revision */
+#define MCFCIR_PIN(x)		((x) >> 6)      /* Chip ID */
+
+#define MCFCIR_54410		0x9f
+#define MCFCIR_54415		0xa0
+#define MCFCIR_54416		0xa1
+#define MCFCIR_54417		0xa2
+#define MCFCIR_54418		0xa3
+
 #endif /* m5441xsim_h */
