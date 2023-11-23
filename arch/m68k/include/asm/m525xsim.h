@@ -215,6 +215,16 @@
 #define MCFGPIO_IRQ_VECBASE	MCF_IRQ_GPIO0
 #endif
 
+/*
+ * Device ID and revision
+ */
+#define MCF_DEVICEID		(MCF_MBAR2 + 0xac)	/* Device ID */
+#define MCFID(x)		((x) >> 8)		/* Chip ID */
+#define MCFREV(x)		((x) & 0xff)		/* Chip revision */
+
+#define MCFID_5249		0x5448			/* MCF5249 */
+#define MCFID_5251		0x5251			/* MCF5251 */
+
 /****************************************************************************/
 
 #ifdef __ASSEMBLER__

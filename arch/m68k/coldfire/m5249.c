@@ -19,6 +19,7 @@
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
 #include <asm/mcfclk.h>
+#include <asm/setup.h>
 
 /***************************************************************************/
 
@@ -121,10 +122,23 @@ static void __init m5249_smc91x_init(void)
 
 /***************************************************************************/
 
+static void __init m5249_probe_cpu(void)
+{
+	u32 v;
+
+	v = mcf_read32(MCF_DEVICEID);
+	if (MCFID(v) == MCFID_5249)
+		m68k_cpumodel = "5249";
+	else
+		m68k_cpumodel = "524x";
+	m68k_cpurevision = MCFREV(v);
+}
+
 void __init config_BSP(char *commandp, int size)
 {
 	mach_sched_init = hw_timer_init;
 
+	m5249_probe_cpu();
 #ifdef CONFIG_M5249C3
 	m5249_smc91x_init();
 #endif
