@@ -1246,5 +1246,21 @@
 #define	MCFI2C_BASE0			(0xFc058000)
 #define	MCFI2C_SIZE0			0x40
 
+/*
+ * Chip Identification.
+ */
+#define MCF_CIR			0xFC0A000A
+#define MCFCIR_PRN(x)		((x) & 0x3f)	/* Chip revision */
+#define MCFCIR_PIN(x)		((x) >> 6)	/* Chip ID */
+
+#define MCFCIR_5329		0x54
+#define MCFCIR_5328		0x59
+#define MCFCIR_5327		0x61
+#define MCFCIR_5373		0x65
+#define MCFCIR_53721		0x68
+#define MCFCIR_5372		0x69
+#define MCFCIR_5373L		0x6B
+#define MCFCIR_5372L		0x6C
+
 /********************************************************************/
 #endif	/* m53xxsim_h */
