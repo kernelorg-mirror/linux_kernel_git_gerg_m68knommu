@@ -162,6 +162,7 @@ config BUILTIN_DTB_NAME
 	default "mcf5271evb" if M527x
 	default "mcf5307-c3" if M5307
 	default "mcf5407-c3" if M5407
+	default "mcf5475evb" if M547x
 	help
 	  Base name (without suffix, relative to arch/m68k/boot/dts) for the
 	  DTS file that will be used to produce the DTB linked into the
