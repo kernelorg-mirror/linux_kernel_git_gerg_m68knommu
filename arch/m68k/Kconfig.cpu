@@ -32,6 +32,7 @@ config COLDFIRE
 	select GPIOLIB
 	select GPIOLIB_LEGACY if SPI_COLDFIRE_QSPI
 	select COMMON_CLK
+	select IRQ_DOMAIN
 	select HAVE_PAGE_SIZE_8KB if !MMU
 
 config SUN3
