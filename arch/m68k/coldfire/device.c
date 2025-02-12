@@ -24,6 +24,7 @@
 #include <linux/platform_data/dma-mcf-edma.h>
 #include <linux/platform_data/mmc-esdhc-mcf.h>
 
+#ifndef CONFIG_OF
 /*
  *	All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
  */
@@ -237,6 +238,7 @@ static struct platform_device mcf_fec1 = {
 	}
 };
 #endif /* MCFFEC_BASE1 */
+#endif /* !CONFIG_OF */
 
 #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
 /*
@@ -677,6 +679,7 @@ static struct platform_device mcf_flexcan0 = {
 #endif /* MCFFLEXCAN_SIZE */
 
 static struct platform_device *mcf_devices[] __initdata = {
+#ifndef CONFIG_OF
 	&mcf_uart0,
 #ifdef MCFUART_BASE1
 	&mcf_uart1,
@@ -711,6 +714,7 @@ static struct platform_device *mcf_devices[] __initdata = {
 #ifdef MCFFEC_BASE1
 	&mcf_fec1,
 #endif
+#endif /* !CONFIG_OF */
 #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
 	&mcf_qspi,
 #endif
