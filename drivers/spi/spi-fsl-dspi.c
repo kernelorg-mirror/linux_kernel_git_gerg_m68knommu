@@ -192,6 +192,7 @@ enum {
 	DSPI_XSPI_REGMAP,
 	S32G_DSPI_XSPI_REGMAP,
 	DSPI_PUSHR,
+	MCF5441X_DSPI_REGMAP,
 };
 
 static const struct regmap_config dspi_regmap_config[] = {
@@ -237,6 +238,17 @@ static const struct regmap_config dspi_regmap_config[] = {
 		.val_bits	= 16,
 		.reg_stride	= 2,
 		.max_register	= 0x2,
+	},
+	[MCF5441X_DSPI_REGMAP] = {
+		.reg_bits	= 32,
+		.val_bits	= 32,
+		.reg_stride	= 4,
+		.max_register	= SPI_RXFR3,
+		.volatile_table	= &dspi_volatile_table,
+		.rd_table	= &dspi_access_table,
+		.wr_table	= &dspi_access_table,
+		.reg_format_endian = REGMAP_ENDIAN_BIG,
+		.val_format_endian = REGMAP_ENDIAN_BIG,
 	},
 };
 
@@ -303,7 +315,7 @@ static const struct fsl_dspi_devtype_data devtype_data[] = {
 		.trans_mode		= DSPI_DMA_MODE,
 		.max_clock_factor	= 8,
 		.fifo_size		= 16,
-		.regmap			= &dspi_regmap_config[DSPI_REGMAP],
+		.regmap			= &dspi_regmap_config[MCF5441X_DSPI_REGMAP],
 	},
 	[S32G] = {
 		.trans_mode	  = DSPI_XSPI_MODE,
