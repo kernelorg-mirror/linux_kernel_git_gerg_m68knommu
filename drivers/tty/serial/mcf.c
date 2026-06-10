@@ -21,6 +21,7 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 #include <linux/platform_device.h>
+#include <linux/of.h>
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
 #include <asm/mcfuart.h>
@@ -576,16 +577,35 @@ static struct uart_driver mcf_driver = {
 
 /****************************************************************************/
 
+static int mcf_next_id(void)
+{
+	int i;
+
+	for (i = 0; i < MCF_MAXPORTS; i++) {
+		if (mcf_ports[i] == NULL)
+			return i;
+	}
+	return -1;
+}
+
 static int mcf_probe(struct platform_device *pdev)
 {
 	struct mcf_uart *mp;
 	struct uart_port *port;
 	struct resource *res;
 	void __iomem *membase;
-	int rc, irq;
+	int rc, id, irq;
 
-	if (pdev->id >= MCF_MAXPORTS)
+	if (pdev->dev.of_node)
+		id = of_alias_get_id(pdev->dev.of_node, "serial");
+	else
+		id = pdev->id;
+	if (id < 0)
+		id = mcf_next_id();
+	if (id < 0 || id >= MCF_MAXPORTS)
 		return -ENODEV;
+	if (mcf_ports[id])
+		return -EBUSY;
 
 	mp = devm_kzalloc(&pdev->dev, sizeof(*mp), GFP_KERNEL);
 	if (mp == NULL)
@@ -600,7 +620,7 @@ static int mcf_probe(struct platform_device *pdev)
 	if (irq < 0)
 		return irq;
 
-	port->line = pdev->id;
+	port->line = id;
 	port->type = PORT_MCF;
 	port->dev = &pdev->dev;
 	port->iotype = SERIAL_IO_MEM;
@@ -619,7 +639,7 @@ static int mcf_probe(struct platform_device *pdev)
 		return rc;
 
 	platform_set_drvdata(pdev, mp);
-	mcf_ports[pdev->id] = mp;
+	mcf_ports[id] = mp;
 	return 0;
 }
 
@@ -630,16 +650,23 @@ static void mcf_remove(struct platform_device *pdev)
 	struct mcf_uart *mp = platform_get_drvdata(pdev);
 
 	uart_remove_one_port(&mcf_driver, &mp->port);
-	mcf_ports[pdev->id] = NULL;
+	mcf_ports[mp->port.line] = NULL;
 }
 
 /****************************************************************************/
+
+static const struct of_device_id mcf_uart_of_ids[] = {
+	{ .compatible = "fsl,mcf-uart", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, mcf_uart_of_ids);
 
 static struct platform_driver mcf_platform_driver = {
 	.probe		= mcf_probe,
 	.remove		= mcf_remove,
 	.driver		= {
 		.name	= "mcfuart",
+		.of_match_table = mcf_uart_of_ids,
 	},
 };
 
