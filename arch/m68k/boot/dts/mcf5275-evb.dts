@@ -1,0 +1,62 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+/ {
+	model = "Freescale MCF5275EVB";
+	compatible = "fsl,mcf5275evb";
+	#address-cells = <1>;
+	#size-cells = <1>;
+	interrupt-parent = <&intc_2>;
+
+	coreclk: clock-150000000 {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <150000000>;
+	};
+
+	intc_2: interrupt-controller@40000c00 {
+		compatible = "fsl,intc-2";
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		reg = <0x40000c00 0x80>;
+	};
+
+	uart0: serial@40000200 {
+		compatible = "fsl,mcf-uart";
+		reg = <0x40000200 0x40>;
+		interrupts = <77>;
+		clocks = <&coreclk>;
+	};
+
+	uart1: serial@40000240 {
+		compatible = "fsl,mcf-uart";
+		reg = <0x40000240 0x40>;
+		interrupts = <78>;
+		clocks = <&coreclk>;
+	};
+
+	uart2: serial@40000280 {
+		compatible = "fsl,mcf-uart";
+		reg = <0x40000280 0x40>;
+		interrupts = <79>;
+		clocks = <&coreclk>;
+	};
+
+	fec0: ethernet@40001000 {
+		compatible = "fsl,m5208-fec";
+		reg = <0x40001000 0x800>;
+		interrupts = <87>, <88>, <89>;
+		interrupt-names = "int0", "int1", "int2";
+		clocks = <&coreclk>, <&coreclk>;
+		clock-names = "ipg", "ahb";
+	};
+
+	fec1: ethernet@40001800 {
+		compatible = "fsl,m5208-fec";
+		reg = <0x40001800 0x800>;
+		interrupts = <151>, <155>, <157>;
+		interrupt-names = "int0", "int1", "int2";
+		clocks = <&coreclk>, <&coreclk>;
+		clock-names = "ipg", "ahb";
+	};
+};
