@@ -1,0 +1,46 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+/ {
+	model = "Freescale MCF5272-C3";
+	compatible = "fsl,mcf5272c3";
+	#address-cells = <1>;
+	#size-cells = <1>;
+	interrupt-parent = <&intc_5272>;
+
+	coreclk: clock-66000000 {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <66000000>;
+	};
+
+	intc_5272: interrupt-controller@10000020 {
+		compatible = "fsl,intc-5272";
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		reg = <0x10000020 0x20>;
+	};
+
+	uart0: serial@10000100 {
+		compatible = "fsl,mcf-uart";
+		reg = <0x10000100 0x40>;
+		interrupts = <73>;
+		clocks = <&coreclk>;
+	};
+
+	uart1: serial@10000140 {
+		compatible = "fsl,mcf-uart";
+		reg = <0x10000140 0x40>;
+		interrupts = <74>;
+		clocks = <&coreclk>;
+	};
+
+	fec: ethernet@10000840 {
+		compatible = "fsl,m5272-fec";
+		reg = <0x10000840 0x1d0>;
+		interrupts = <86>, <87>, <88>;
+		interrupt-names = "int0", "int1", "int2";
+		clocks = <&coreclk>, <&coreclk>;
+		clock-names = "ipg", "ahb";
+	};
+};
