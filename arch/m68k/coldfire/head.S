@@ -186,6 +186,11 @@ _start:
 	addl	%a7,%d0
 	movel	%d0,_ramend			/* set end ram addr */
 
+#ifdef CONFIG_RAMBAR_DISABLE
+	movel	#0,%d0				/* Disable SRAM region */
+	movec	%d0,%RAMBAR
+#endif
+
 	/*
 	 *	Now that we know what the memory is, lets enable cache
 	 *	and get things moving. This is Coldfire CPU specific. Not
