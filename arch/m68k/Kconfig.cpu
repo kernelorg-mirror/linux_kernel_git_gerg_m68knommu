@@ -553,6 +553,18 @@ config NR_CPUS
 	int
 	default "1"
 
+config RAMBAR_DISABLE
+	bool "Disable the SRAM block at startup"
+	depends on COLDFIRE
+	help
+	  Most ColdFire SoC parts have a small SRAM block that can be mapped
+	  into the 32bit processor address space. Linux does not generally
+	  use this. But some board boot ROMs enable it, and often map it at
+	  odd address locations. It can cause boot up problems due to it being
+	  enabled and clashing with DRAM, or more often with enabled and
+	  mapped virtual memory space. Select this option for the kernel
+	  to disable it during system startup.
+
 # Coldfire cores that do not have a data cache configured can do coherent DMA.
 config COLDFIRE_COHERENT_DMA
 	bool
