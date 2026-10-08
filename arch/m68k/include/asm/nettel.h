@@ -40,6 +40,11 @@
 
 #ifndef __ASSEMBLER__
 
+/*
+ * 	This family of platforms has dual SMSC91xx network chips.
+ */
+#define NETTEL_SMC91XX
+
 extern volatile unsigned short ppdata;
 
 /*
@@ -81,6 +86,12 @@ static __inline__ void mcf_setppdata(unsigned int mask, unsigned int bits)
 #define	MCFPP_DTR1	0x0000		/* Port 1 no DTR support */
 
 #ifndef __ASSEMBLER__
+
+/*
+ * 	This family of platforms has dual SMSC91xx network chips.
+ */
+#define NETTEL_SMC91XX
+
 /*
  *	These functions defined to give quasi generic access to the
  *	PPIO bits used for DTR/DCD.
