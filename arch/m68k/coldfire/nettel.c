@@ -18,6 +18,7 @@
 #include <asm/mcfsim.h>
 #include <asm/nettel.h>
 
+#ifdef NETTEL_SMC91XX
 /***************************************************************************/
 
 /*
@@ -152,3 +153,4 @@ static int __init init_nettel(void)
 arch_initcall(init_nettel);
 
 /***************************************************************************/
+#endif /* NETTEL_SMC91XX */
